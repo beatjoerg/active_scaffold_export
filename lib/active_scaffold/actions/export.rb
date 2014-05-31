@@ -65,6 +65,7 @@ module ActiveScaffold::Actions
       respond_to do |format|
         format.csv do
           response.headers['Content-type'] = 'text/csv'
+          response.headers['Last-Modified'] = Time.now.ctime.to_s
           # start streaming output
           self.response_body = Enumerator.new do |y|
             find_items_for_export do |records|
@@ -111,7 +112,7 @@ module ActiveScaffold::Actions
 
       if params[:full_download] == 'true'
         find_options.merge!({
-          :per_page => 3000,
+          :per_page => 100,
           :page => 1
         })
         find_page(find_options).pager.each do |page|
